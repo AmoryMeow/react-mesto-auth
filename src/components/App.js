@@ -2,7 +2,7 @@ import React from 'react';
 import '../App.css';
 import api from '../utils/Api.js';
 import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
-import {Router} from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -130,21 +130,35 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
     <body className="page">
  
-      <Header link="/" textLink="Выйти" email="example@example.ru"/>
+      <Switch>
+        <Route exact path="/">
+          
+          <Header link="/sign-in" textLink="Выйти" email="example@example.ru"/>
 
-      <Register/>
-      <Login />
+          <Main 
+          onEditProfile={handleEditProfileClick} 
+          onAddPlace ={handleAddPlaceClick} 
+          onEditAvatar={handleEditAvatarClick}
+          onCardClick={handleCardClick}
+          cards={cards}
+          onCardLike ={handleCardLike}
+          onCardDelete={handleCardDelete}
+          />
+        </Route>
+        <Route path="/sign-in">
+          
+          <Header link="/sign-up" textLink="Регистрация"/>
+          <Login />
 
-      <Main 
-        onEditProfile={handleEditProfileClick} 
-        onAddPlace ={handleAddPlaceClick} 
-        onEditAvatar={handleEditAvatarClick}
-        onCardClick={handleCardClick}
-        cards={cards}
-        onCardLike ={handleCardLike}
-        onCardDelete={handleCardDelete}
-      />
+        </Route>
+        <Route path="/sign-up">
+          
+          <Header link="/sign-in" textLink="Войти"/>
+          <Register/>
 
+        </Route>
+      </Switch>
+      
       <EditProfilePopup
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
@@ -178,7 +192,7 @@ function App() {
       />
     
       <Footer />
-
+      
     </body>
     </CurrentUserContext.Provider>
   );

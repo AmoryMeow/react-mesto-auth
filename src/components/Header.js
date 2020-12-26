@@ -4,7 +4,7 @@ import {NavLink} from 'react-router-dom';
 function Header({email, link, textLink}) {
   return (
     <header className="header">
-      <img src={logo} alt="Логотип" className="logo" />
+      <NavLink to="/"><img src={logo} alt="Логотип" className="logo" /></NavLink>
       <nav className="header__nav">
         {email && <p className="header__login">{email}</p> }
         <NavLink className="header__link" to={link}>{textLink}</NavLink>
