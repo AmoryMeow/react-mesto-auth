@@ -12,6 +12,7 @@ import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import Login from './Login';
+import Register from './Register';
 
 function App() {
 
@@ -131,8 +132,9 @@ function App() {
  
       <Header link="/" textLink="Выйти" email="example@example.ru"/>
 
+      <Register/>
       <Login />
-      
+
       <Main 
         onEditProfile={handleEditProfileClick} 
         onAddPlace ={handleAddPlaceClick} 
