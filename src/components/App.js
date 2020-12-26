@@ -2,7 +2,7 @@ import React from 'react';
 import '../App.css';
 import api from '../utils/Api.js';
 import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -13,6 +13,7 @@ import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import Login from './Login';
 import Register from './Register';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
 
@@ -25,6 +26,9 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({name: '', link: '', isOpenCard: false});
 
   const [submitTextSave, setSubmitTextSave]= React.useState('Сохранить');
+
+  /*авторизация*/
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -131,11 +135,10 @@ function App() {
     <body className="page">
  
       <Switch>
-        <Route exact path="/">
-          
-          <Header link="/sign-in" textLink="Выйти" email="example@example.ru"/>
 
-          <Main 
+        <ProtectedRoute exact path="/" 
+          loggedIn={loggedIn} 
+          component={Main}
           onEditProfile={handleEditProfileClick} 
           onAddPlace ={handleAddPlaceClick} 
           onEditAvatar={handleEditAvatarClick}
@@ -143,8 +146,8 @@ function App() {
           cards={cards}
           onCardLike ={handleCardLike}
           onCardDelete={handleCardDelete}
-          />
-        </Route>
+        />
+
         <Route path="/sign-in">
           
           <Header link="/sign-up" textLink="Регистрация"/>
