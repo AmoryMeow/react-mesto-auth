@@ -141,6 +141,17 @@ function App() {
     .catch(err => console.log(err))
   }
 
+  function onSubmitLogin(email, password) {
+    auth.login(email,password)
+      .then((res) => {
+        console.log('res: ', res);
+      })
+      .catch((err) => {
+        console.log('err: ', err);
+
+      })
+  }
+
   return (
 
     <CurrentUserContext.Provider value={currentUser}>
@@ -163,7 +174,7 @@ function App() {
         <Route path="/sign-in">
           
           <Header link="/sign-up" textLink="Регистрация"/>
-          <Login />
+          <Login onSubmitLogin={onSubmitLogin}/>
 
         </Route>
         <Route path="/sign-up">

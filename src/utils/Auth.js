@@ -25,6 +25,16 @@ export class Auth {
       }))
   }
 
+  login(email, password) {
+    return this._getResponseData(fetch(`${this._baseUrl}/signin`, {  
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({
+        "password": password,
+        "email": email
+      })
+    }))
+  }
 
 }
 
