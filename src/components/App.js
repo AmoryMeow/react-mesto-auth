@@ -1,8 +1,9 @@
 import React from 'react';
 import '../App.css';
 import api from '../utils/Api.js';
+import auth from '../utils/Auth.js';
 import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -27,9 +28,10 @@ function App() {
 
   const [submitTextSave, setSubmitTextSave]= React.useState('Сохранить');
 
-  /*авторизация*/
+  // авторизация
   const [loggedIn, setLoggedIn] = React.useState(false);
 
+  // попапы
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
    }
@@ -53,7 +55,7 @@ function App() {
     setSelectedCard({name: '', link: '', isOpenCard: false});
    }
 
-  //получение начальных данных
+  // получение начальных данных
   React.useEffect(() => {
     api.getAllData()
       .then((allData) => {
@@ -66,7 +68,7 @@ function App() {
       .catch((err) => console.log(err));
   },[])
   
-  //данные пользователя
+  // данные пользователя
   function handleUpdateUser(data) {
     setSubmitTextSave("Сохранение...");
     api.saveProfile(data)
@@ -129,6 +131,16 @@ function App() {
       });
   }
 
+  //авторизация
+  function onSubmitRegister(email, password) {
+
+    auth.register(email, password)
+    .then((res) => {
+      console.log('res: ', res);
+    })
+    .catch(err => console.log(err))
+  }
+
   return (
 
     <CurrentUserContext.Provider value={currentUser}>
@@ -157,7 +169,7 @@ function App() {
         <Route path="/sign-up">
           
           <Header link="/sign-in" textLink="Войти"/>
-          <Register/>
+          <Register onSubmitRegister={onSubmitRegister} />
 
         </Route>
       </Switch>
