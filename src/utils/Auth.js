@@ -36,12 +36,21 @@ export class Auth {
     }))
   }
 
+  checkToken(token) {
+    return this._getResponseData(fetch(`${this._baseUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        ...this._headers,
+        "Authorization" : `Bearer ${token}`
+      }
+    }))
+  }
+
 }
 
 const auth = new Auth({
   baseUrl: 'https://auth.nomoreparties.co',
   headers: {
-    //"Authorization" : `Bearer ${jwt}`,
     'Content-Type': 'application/json'
   }
 })

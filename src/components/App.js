@@ -3,7 +3,7 @@ import '../App.css';
 import api from '../utils/Api.js';
 import auth from '../utils/Auth.js';
 import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -35,6 +35,20 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [isSuccessPopupOpen,setSuccessPopupOpen] = React.useState(false);
   const [isFailPopupOpen,setFailPopupOpen] = React.useState(false);
+  const [email,setEmail] = React.useState('');
+  const history = useHistory();
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    auth.checkToken(token)    
+      .then((res) => {
+        if (res.data) {
+          setLoggedIn(true);
+          setEmail(res.data.email);
+          history.push('/');
+        }
+      })
+  },[])
 
   // попапы
   function handleEditAvatarClick() {
@@ -153,14 +167,30 @@ function App() {
   }
 
   function onSubmitLogin(email, password) {
+    if (!email || !password) {
+      return;
+    }
     auth.login(email,password)
       .then((res) => {
         console.log('res: ', res);
+        if (res.token){
+          localStorage.setItem('token', res.token);
+          setLoggedIn(true);
+          setEmail(email)
+          history.push('/');
+        }
       })
       .catch((err) => {
         console.log('err: ', err);
         setFailPopupOpen(true);
       })
+  }
+
+  function handleSignOut() {
+    localStorage.removeItem('token');
+    setLoggedIn(false);
+    setEmail('');
+    history.push('/sign-in');
   }
 
   return (
@@ -173,11 +203,13 @@ function App() {
         <ProtectedRoute exact path="/" 
           loggedIn={loggedIn} 
           component={Main}
+          onSignOut={handleSignOut}
           onEditProfile={handleEditProfileClick} 
           onAddPlace ={handleAddPlaceClick} 
           onEditAvatar={handleEditAvatarClick}
           onCardClick={handleCardClick}
           cards={cards}
+          email={email}
           onCardLike ={handleCardLike}
           onCardDelete={handleCardDelete}
         />

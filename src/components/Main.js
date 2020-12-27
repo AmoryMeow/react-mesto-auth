@@ -5,13 +5,15 @@ import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
 
 function Main(props) {
  
-  const {cards, 
+  const {cards,
+         email, 
          onEditAvatar, 
          onEditProfile, 
          onAddPlace, 
          onCardClick, 
          onCardLike, 
-         onCardDelete} = props;
+         onCardDelete,
+         onSignOut} = props;
 
   const currentUser = React.useContext(CurrentUserContext);
     
@@ -19,7 +21,7 @@ function Main(props) {
 
     <>
 
-    <Header link="/sign-in" textLink="Выйти" email="example@example.ru"/>
+    <Header link="/sign-in" textLink="Выйти" email={email} onSignOut={onSignOut}/>
 
     <main className="content">
       <section className="profile">
