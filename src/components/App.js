@@ -16,6 +16,9 @@ import Login from './Login';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
 
+import picFail from '../images/fail.svg';
+import picSuccess from '../images/success.svg';
+
 function App() {
 
   const [currentUser, setCurrentUser] = React.useState({});
@@ -30,6 +33,8 @@ function App() {
 
   // авторизация
   const [loggedIn, setLoggedIn] = React.useState(false);
+  const [isSuccessPopupOpen,setSuccessPopupOpen] = React.useState(false);
+  const [isFailPopupOpen,setFailPopupOpen] = React.useState(false);
 
   // попапы
   function handleEditAvatarClick() {
@@ -52,6 +57,8 @@ function App() {
     setEditAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
+    setFailPopupOpen(false);
+    setSuccessPopupOpen(false);
     setSelectedCard({name: '', link: '', isOpenCard: false});
    }
 
@@ -137,8 +144,12 @@ function App() {
     auth.register(email, password)
     .then((res) => {
       console.log('res: ', res);
+      setSuccessPopupOpen(true);
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      console.log(err);
+      setFailPopupOpen(true);
+    })
   }
 
   function onSubmitLogin(email, password) {
@@ -148,7 +159,7 @@ function App() {
       })
       .catch((err) => {
         console.log('err: ', err);
-
+        setFailPopupOpen(true);
       })
   }
 
@@ -212,11 +223,27 @@ function App() {
         submitText="Да"
       />
     
+      <PopupWithForm 
+        name="success"
+        isOpen={isSuccessPopupOpen} 
+        onClose={closeAllPopups}
+        title="Вы успешно зарегистрировались!" 
+        img={picSuccess}
+      />
+
+      <PopupWithForm 
+        name="fail" 
+        isOpen={isFailPopupOpen}
+        onClose={closeAllPopups}
+        title="Что-то пошло не так! Попробуйте еще раз." 
+        img={picFail}
+      />
+
       <ImagePopup 
         card={selectedCard}
         onClose={closeAllPopups}
       />
-    
+
       <Footer />
       
     </body>
