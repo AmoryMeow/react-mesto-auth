@@ -15,9 +15,7 @@ import AddPlacePopup from './AddPlacePopup.js';
 import Login from './Login';
 import Register from './Register';
 import ProtectedRoute from './ProtectedRoute';
-
-import picFail from '../images/fail.svg';
-import picSuccess from '../images/success.svg';
+import InfoTooltip from './InfoTooltip';
 
 function App() {
 
@@ -48,6 +46,7 @@ function App() {
           history.push('/');
         }
       })
+      .catch((err) => console.log(err));
   },[])
 
   // попапы
@@ -154,11 +153,14 @@ function App() {
 
   //авторизация
   function onSubmitRegister(email, password) {
-
+    if (!email || !password) {
+      return;
+    }
     auth.register(email, password)
     .then((res) => {
-      console.log('res: ', res);
-      setSuccessPopupOpen(true);
+      if (res.data) {
+        setSuccessPopupOpen(true);
+      }
     })
     .catch(err => {
       console.log(err);
@@ -172,7 +174,6 @@ function App() {
     }
     auth.login(email,password)
       .then((res) => {
-        console.log('res: ', res);
         if (res.token){
           localStorage.setItem('token', res.token);
           setLoggedIn(true);
@@ -255,20 +256,18 @@ function App() {
         submitText="Да"
       />
     
-      <PopupWithForm 
+      <InfoTooltip 
         name="success"
         isOpen={isSuccessPopupOpen} 
         onClose={closeAllPopups}
         title="Вы успешно зарегистрировались!" 
-        img={picSuccess}
       />
 
-      <PopupWithForm 
+      <InfoTooltip 
         name="fail" 
         isOpen={isFailPopupOpen}
         onClose={closeAllPopups}
         title="Что-то пошло не так! Попробуйте еще раз." 
-        img={picFail}
       />
 
       <ImagePopup 
