@@ -13,6 +13,7 @@
 @media (max-width: 882px) {
   .header {
     padding-left: 27px;
+    padding-right: 30px;
     padding-top: 28px;
     min-height: 84px;
   }

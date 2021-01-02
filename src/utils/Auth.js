@@ -6,7 +6,6 @@ export class Auth {
 
   _getResponseData(response) {
     return response.then((res) => {
-      console.log('res: ', res);
         if (res.ok) {
           return res.json();
         }
