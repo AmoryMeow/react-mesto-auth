@@ -22,9 +22,9 @@ function App() {
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
 
-  const [isEditProfilePopupOpen,setEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen,setAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen,setEditAvatarPopupOpen] = React.useState(false);
+  const [isEditProfilePopupOpen,setIsEditProfilePopupOpen] = React.useState(false);
+  const [isAddPlacePopupOpen,setIsAddPlacePopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen,setIsEditAvatarPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({name: '', link: '', isOpenCard: false});
 
   const [submitTextSave, setSubmitTextSave]= React.useState('Сохранить');
@@ -38,28 +38,33 @@ function App() {
 
   React.useEffect(() => {
     const token = localStorage.getItem('token');
-    auth.checkToken(token)    
-      .then((res) => {
-        if (res.data) {
-          setLoggedIn(true);
-          setEmail(res.data.email);
-          history.push('/');
-        }
-      })
-      .catch((err) => console.log(err));
+    if (token) {
+      auth.checkToken(token)    
+        .then((res) => {
+          if (res.data) {
+            setLoggedIn(true);
+            setEmail(res.data.email);
+            history.push('/');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          localStorage.removeItem('token')
+        });
+    }
   },[])
 
   // попапы
   function handleEditAvatarClick() {
-    setEditAvatarPopupOpen(true);
+    setIsEditAvatarPopupOpen(true);
    }
 
   function handleEditProfileClick() {
-    setEditProfilePopupOpen(true);
+    setIsEditProfilePopupOpen(true);
    }
 
   function handleAddPlaceClick() {
-    setAddPlacePopupOpen(true);
+    setIsAddPlacePopupOpen(true);
    }
 
   function handleCardClick(card) {
@@ -67,9 +72,9 @@ function App() {
    }
     
   function closeAllPopups(){
-    setEditAvatarPopupOpen(false);
-    setEditProfilePopupOpen(false);
-    setAddPlacePopupOpen(false);
+    setIsEditAvatarPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsAddPlacePopupOpen(false);
     setFailPopupOpen(false);
     setSuccessPopupOpen(false);
     setSelectedCard({name: '', link: '', isOpenCard: false});
@@ -78,12 +83,9 @@ function App() {
   // получение начальных данных
   React.useEffect(() => {
     api.getAllData()
-      .then((allData) => {
-        const [profile, initialCards] = allData;
-        
+      .then(([profile, initialCards]) => {
         setCards(initialCards);
-        setCurrentUser(profile)
-
+        setCurrentUser(profile);
       })
       .catch((err) => console.log(err));
   },[])
@@ -96,6 +98,7 @@ function App() {
         setCurrentUser(profile);
         closeAllPopups();
       })
+      .catch((err) => console.log(err))
       .finally(() => {
         setSubmitTextSave("Сохранить");
       });
@@ -108,6 +111,7 @@ function App() {
         setCurrentUser(profile);
         closeAllPopups();
     })
+    .catch((err) => console.log(err))
     .finally(() => {
       setSubmitTextSave("Сохранить");
     });
@@ -124,7 +128,8 @@ function App() {
       .then((newCard) => {
         const newCards = cards.map((c) => c._id === card._id ? newCard : c);
         setCards(newCards);
-      });
+      })
+      .catch((err) => console.log(err));
   } 
 
   /* удаление карточки */
@@ -136,6 +141,7 @@ function App() {
         });
         setCards(newCards);
       })
+      .catch((err) => console.log(err));
   }
 
   /* добавление карточки */
@@ -146,6 +152,7 @@ function App() {
         setCards([data, ...cards]);
         closeAllPopups();
       })
+      .catch((err) => console.log(err))
       .finally(() => {
         setSubmitTextSave("Сохранить");
       });
@@ -197,8 +204,12 @@ function App() {
   return (
 
     <CurrentUserContext.Provider value={currentUser}>
-    <body className="page">
- 
+    {/* <body className="page"> */}
+
+    {
+      loggedIn && <Header link="/sign-in" textLink="Выйти" email={email} onSignOut={handleSignOut}/>
+    }
+     
       <Switch>
 
         <ProtectedRoute exact path="/" 
@@ -277,7 +288,7 @@ function App() {
 
       <Footer />
       
-    </body>
+    {/* </body> */}
     </CurrentUserContext.Provider>
   );
 }
