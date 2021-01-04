@@ -1,7 +1,7 @@
 import React from 'react';
 import '../App.css';
-import api from '../utils/Api.js';
-import auth from '../utils/Auth.js';
+import api from '../utils/api.js';
+import auth from '../utils/auth.js';
 import {CurrentUserContext} from '../contexts/CurrentUserContext.js';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import Header from './Header.js';
@@ -209,7 +209,7 @@ function App() {
     {
       loggedIn && <Header link="/sign-in" textLink="Выйти" email={email} onSignOut={handleSignOut}/>
     }
-     
+
       <Switch>
 
         <ProtectedRoute exact path="/" 
